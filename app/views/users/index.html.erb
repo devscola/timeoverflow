@@ -82,6 +82,77 @@
   </table>
 </div>
 
+<div>
+  <h1>
+    <%= User.model_name.human.pluralize %>
+    —
+    <%= link_to current_organization.name,
+                organization_path(current_organization) %>
+    <% if params[:q].present? %>
+      <small>
+        <%= glyph :search %>
+        <%= params[:q] %>
+      </small>
+    <% end %>
+  </h1>
+  <div class="navbar">
+    
+    <ul class="nav navbar-nav pull-right">
+      <% if admin? %>
+        <li>
+          <a href="<%= new_user_path %>">
+            <span class="glyphicon glyphicon-plus"></span>
+            <%= t "helpers.submit.create", model: User.model_name.human %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <table class="table table-hover table-condensed users panel">
+    <thead>
+      <tr></tr>
+      <tr>
+        <th></th>
+        <th>
+          <a>
+            ID
+          </a>
+        </th>
+        <th>
+          <a>
+            <%= User.human_attribute_name(:username) %>
+          </a>
+        </th>
+        <th>
+          <a>
+            <%= User.human_attribute_name(:email) %>
+          </a>
+        </th>
+        <th>
+          <%= User.human_attribute_name(:phone) %>
+        </th>
+        <th>
+          <%= User.human_attribute_name(:alt_phone) %>
+        </th>
+        <th>
+          <a>
+            <%= Account.human_attribute_name(:balance) %>
+          </a>
+        </th>
+        <% if current_user.manages? current_organization %>
+          <th>
+            <span class="glyphicon glyphicon-hand-down"></span>
+            <%= t(".actions") %>
+          </th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render "new_user_rows", users: @users %>
+    </tbody>
+  </table>
+</div>
+
 <script id="confirm_toggle_manager.html" type="text/ng-template">
   <div class="modal-body">
     <%= t('.manage_warning_angular') %>

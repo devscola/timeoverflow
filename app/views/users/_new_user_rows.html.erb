@@ -1,0 +1,25 @@
+<% users.each do |user| %>
+  <tr>
+    <td>
+      <img src="<%= avatar_url(user) %>" height: "32px" width: "32px">
+    </td>
+    <td><%= user.id %></td>
+    <td>
+      <% unless(user.active?(current_organization)) %>
+        <span class="glyphicon glyphicon-time"></span>
+      <% end %> 
+      <a href="<%= user_path(user) %>"><%= user.username %></a>
+    </td>
+    <td>
+      <% if(user.unconfirmed_email) %>
+        <a href="mailto:<%=user.unconfirmed_email%>">
+          <%= user.unconfirmed_email %>
+        </a>      
+      <% else %>
+        <a href="mailto:<%=user.email%>">
+          <%= user.email %>
+        </a>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
