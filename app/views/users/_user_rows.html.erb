@@ -1,64 +1,74 @@
-<tr ng-repeat="user in users | orderBy:sort | filter:filterTerm"
-    ng-class="{'bg-danger': !user.active}">
-  <td>
-    <img ng-src="{{user.avatar}}" height: "32px" width: "32px">
-  </td>
-  <td>{{user.member_id}}</td>
-  <td>
-    <span class="glyphicon glyphicon-time" ng-if="!user.active"></span>
-    <a ng-href="{{user.url}}">{{user.username}}</a>
-  </td>
-  <td>
-    <a ng-href="mailto:{{user.email}}" ng-if="!user.unconfirmed_email">
-      {{user.email}}
-    </a>
-    <a ng-href="mailto:{{user.unconfirmed_email}}" ng-if="user.unconfirmed_email">
-      {{user.unconfirmed_email}}
-    </a>
-  </td>
-  <td> {{user.phone}} </td>
-  <td> {{user.alt_phone}} </td>
-  <td> {{user.balance | timeBalance}} </td>
-  <% if current_user.manages?(current_organization) %>
-    <td class="hover-actions">
-      <a class="action" ng-if="user.edit_link" ng-href"{{user.edit_link}}">
-        <%= glyph :pencil %>
-        <%= t "global.edit" %>
-      </a>
-      <a class="action"
-         ng-if="user.cancel_link && !user.active"
-         ng-href="{{user.cancel_link}}"
-         data-method="delete"
-         data-confirm="<%= t '.cancel_warning', user: "{{user.username}}" %>">
-        <%= glyph :ban_circle %>
-        <%= t "global.cancel_membership" %>
-      </a>
-      <a class="action"
-         href=""
-         ng-if="user.toggle_manager_link && user.active"
-         ng-click="toggle_manager(user)">
-        <span ng-if="user.manager">
-          <%= glyph :arrow_down %>
-          <%= t "global.demote" %>
-        </span>
-        <span ng-if="!user.manager">
-          <%= glyph :arrow_up %>
-          <%= t "global.promote" %>
-        </span>
-      </a>
-      <a class="action"
-         href=""
-         ng-if="user.toggle_active_link"
-         ng-click="toggle_active(user)">
-        <span ng-if="user.active">
-          <%= glyph :remove %>
-          <%= t ".deactivate" %>
-        </span>
-        <span ng-if="!user.active">
-          <%= glyph :ok %>
-          <%= t ".activate" %>
-        </span>
-      </a>
+<% members.each do |member| %>
+  <%- user = member.user %>
+  <tr>
+    <td>
+      <img src="<%= avatar_url(user) %>" height: "32px" width: "32px">
     </td>
-  <% end %>
-</tr>
+    <td><%= user.id %></td>
+    <td>
+      <% unless(user.active?(current_organization)) %>
+        <span class="glyphicon glyphicon-time"></span>
+      <% end %> 
+      <a href="<%= user_path(user) %>"><%= user.username %></a>
+    </td>
+    <td>
+      <% if(user.unconfirmed_email) %>
+        <a href="mailto:<%=user.unconfirmed_email%>">
+          <%= user.unconfirmed_email %>
+        </a>      
+      <% else %>
+        <a href="mailto:<%=user.email%>">
+          <%= user.email %>
+        </a>
+      <% end %>
+    </td>
+    <td>
+      <%= user.phone %>
+    </td>
+    <td>
+      <%= user.alt_phone %>
+    </td>
+    <td>
+      <%= seconds_to_hm member.account_balance.to_i %>
+    </td>
+    <% if current_user.manages?(current_organization) %>
+      <td class="hover-actions">
+        <%= link_to edit_user_path(user), class: "action" do %>
+          <%= glyph(:pencil) %>
+          <%= t("global.edit") %>
+        <% end %>
+
+        <% if member.active? %>
+          <% if member.manager %>
+            <% if user != current_user %>
+              <%= link_to toggle_manager_member_path(member), method: :put, class: "action" do %>
+                <%= glyph :arrow_down %>
+                <%= t "global.demote" %>
+              <% end %>
+            <% end %>
+          <% else %>
+            <%= link_to toggle_manager_member_path(member), method: :put, class: "action" do %>
+              <%= glyph :arrow_up %>
+              <%= t "global.promote" %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <%= link_to user_path(user), method: :delete, class: "action" do %>
+            <%= glyph :ban_circle %>
+            <%= t "global.cancel_membership" %>
+          <% end %>
+        <% end %>
+
+        <%= link_to toggle_active_member_path(member), class: "action" do %>
+          <% if member.active? %>
+            <%= glyph :remove %>
+            <%= t ".deactivate" %>
+          <% else %>
+            <%= glyph :ok %>
+            <%= t ".activate" %>
+          <% end %>
+        <% end %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>
