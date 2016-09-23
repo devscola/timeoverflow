@@ -1,4 +1,5 @@
-<% users.each do |user| %>
+<% members.each do |member| %>
+  <%- user = member.user %>
   <tr>
     <td>
       <img src="<%= avatar_url(user) %>" height: "32px" width: "32px">
@@ -20,6 +21,15 @@
           <%= user.email %>
         </a>
       <% end %>
+    </td>
+    <td>
+      <%= user.phone %>
+    </td>
+    <td>
+      <%= user.alt_phone %>
+    </td>
+    <td>
+      <%= seconds_to_hm member.account_balance %>
     </td>
   </tr>
 <% end %>
