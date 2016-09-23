@@ -59,7 +59,7 @@
           <% end %>
         <% end %>
 
-        <%= link_to toggle_active_member_path(member), class: "action" do %>
+        <%= link_to toggle_active_member_path(member), method: :put, class: "action" do %>
           <% if member.active? %>
             <%= glyph :remove %>
             <%= t ".deactivate" %>
