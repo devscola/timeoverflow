@@ -29,7 +29,46 @@
       <%= user.alt_phone %>
     </td>
     <td>
-      <%= seconds_to_hm member.account_balance %>
+      <%= seconds_to_hm member.account_balance.to_i %>
     </td>
+    <% if current_user.manages?(current_organization) %>
+      <td class="hover-actions">
+        <%= link_to edit_user_path(user), class: "action" do %>
+          <%= glyph(:pencil) %>
+          <%= t("global.edit") %>
+        <% end %>
+
+        <% if member.active? %>
+          <% if member.manager %>
+            <% if user != current_user %>
+              <%= link_to toggle_manager_member_path(member), method: :put, class: "action" do %>
+                <%= glyph :arrow_down %>
+                <%= t "global.demote" %>
+              <% end %>
+            <% end %>
+          <% else %>
+            <%= link_to toggle_manager_member_path(member), method: :put, class: "action" do %>
+              <%= glyph :arrow_up %>
+              <%= t "global.promote" %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <%= link_to user_path(user), method: :delete, class: "action" do %>
+            <%= glyph :ban_circle %>
+            <%= t "global.cancel_membership" %>
+          <% end %>
+        <% end %>
+
+        <%= link_to toggle_active_member_path(member), class: "action" do %>
+          <% if member.active? %>
+            <%= glyph :remove %>
+            <%= t ".deactivate" %>
+          <% else %>
+            <%= glyph :ok %>
+            <%= t ".activate" %>
+          <% end %>
+        <% end %>
+      </td>
+    <% end %>
   </tr>
 <% end %>
