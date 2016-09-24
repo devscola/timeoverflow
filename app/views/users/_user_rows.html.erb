@@ -41,13 +41,13 @@
         <% if member.active? %>
           <% if member.manager %>
             <% if user != current_user %>
-              <%= link_to toggle_manager_member_path(member), method: :put, class: "action" do %>
+              <%= link_to toggle_manager_member_path(member), method: :put, class: "action", data: { target: '#modal', toggle: 'modal' } do %>
                 <%= glyph :arrow_down %>
                 <%= t "global.demote" %>
               <% end %>
             <% end %>
           <% else %>
-            <%= link_to toggle_manager_member_path(member), method: :put, class: "action" do %>
+            <%= link_to toggle_manager_member_path(member), method: :put, class: "action", data: { target: '#modal', toggle: 'modal' } do %>
               <%= glyph :arrow_up %>
               <%= t "global.promote" %>
             <% end %>
