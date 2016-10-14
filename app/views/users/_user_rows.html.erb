@@ -47,19 +47,19 @@
               <% end %>
             <% end %>
           <% else %>
-            <%= link_to toggle_manager_member_path(member), method: :put, class: "action", data: { target: '#modal', toggle: 'modal' } do %>
+            <%= link_to toggle_manager_member_path(member), method: :put, class: "action", data: {confirm: t('.active_warning', user: user.username), target: '#modal', toggle: 'modal' } do %>
               <%= glyph :arrow_up %>
               <%= t "global.promote" %>
             <% end %>
           <% end %>
         <% else %>
-          <%= link_to user_path(user), method: :delete, class: "action" do %>
+          <%= link_to user_path(user), method: :delete, class: "action", data: {confirm: t('.cancel_warning', user: user.username) } do %>
             <%= glyph :ban_circle %>
             <%= t "global.cancel_membership" %>
           <% end %>
         <% end %>
 
-        <%= link_to toggle_active_member_path(member), method: :put, class: "action" do %>
+        <%= link_to toggle_active_member_path(member), method: :put, class: "action", data: { confirm: t(".active_warning", user: user.username) } do %>
           <% if member.active? %>
             <%= glyph :remove %>
             <%= t ".deactivate" %>
